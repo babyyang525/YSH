@@ -1,0 +1,83 @@
+#include<cstdio>
+#include<iostream>
+#include<cmath>
+using namespace std; 
+
+class jacobbi{
+	private:
+		int n;
+		double aa[100][100],bb[100];
+		double xk[100],xkk[100];
+	public:
+		jacobbi(int num,double m[100][100],double mm[100]);
+		void cal();
+		double cond();
+};
+jacobbi::jacobbi(int num,double m[100][100],double mm[100])
+{
+	n=num;
+	for(int i=1;i<=n;i++)
+	for(int j=1;j<=n;j++)
+	aa[i][j]=m[i][j];
+	for(int i=1;i<=n;i++)
+	{
+		bb[i]=mm[i];  
+		xk[i]=0;
+		xkk[i]=1;
+	}	
+ } 
+
+double jacobbi::cond() 
+{
+	double maxn=-1;
+	for(int i=1;i<=n;i++)
+	{
+		maxn=max(maxn,abs(xkk[i]-xk[i]));
+	}
+	return maxn;
+}
+void jacobbi::cal() 
+{
+	
+	int cnt=0;
+	while(cond()>0.0001)
+	{
+		if(cnt!=0){
+		for(int i=1;i<=n;i++)
+		xk[i]=xkk[i];	
+		}
+		cout<<"\n第"<<cnt<<"次迭代后的x：" ;
+		for(int i=1;i<=n;i++)
+		cout<<xk[i]<<" ";
+		for(int i=1;i<=n;i++)
+		{
+			double sigma=0;
+			for(int j=1;j<=i-1;j++)
+				sigma+=aa[i][j]*xkk[j]*(-1);
+			for(int j=i+1;j<=n;j++)
+			sigma+=aa[i][j]*xk[j]*(-1);
+			xkk[i]=(sigma+bb[i])/aa[i][i];
+		}
+		cnt++;
+	}
+}
+int main()
+{
+	double a[100][100],b[100];
+	int n;
+	cout<<"欢迎进入n元1次方程组计算器！\n";
+	cout<<"请输入n："; 
+	cin>>n;//n元 
+	for(int i=1;i<=n;i++)
+	{
+		cout<<"请输入第"<<i<<"个方程的各个数值:";
+		for(int j=1;j<=n;j++)
+		{
+			cin>>a[i][j];
+		 } 
+		 cin>>b[i];
+	 } 
+	 jacobbi f(n,a,b);
+	 f.cal();
+	 return 0;
+}
